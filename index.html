@@ -207,7 +207,7 @@
     </div>
 
     <script>
-        const dataStruttura = {
+       const dataStruttura = {
             "Asingeran 2022": {
                 "Cantiere E": ["Q1", "Q2"],
                 "Cantiere F": ["Q1"]
@@ -271,8 +271,6 @@
 
         function closeModal() {
             modal.style.display = 'none';
-            rapportiDati = [];
-            renderChips();
         }
 
         function addRapporto(tipo) {
@@ -293,18 +291,36 @@
             });
         }
 
-     function removeRapporto(id) {
+        function removeRapporto(id) {
             rapportiDati = rapportiDati.filter(r => r.id !== id);
             renderChips();
         }
 
-        function salvaDati() {
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbx0ih26TqMcqg6YGns5BQDP7TJ9PCDRV5ew8wsDXo2HFW7WwmIH3yrSXNJr3SNdb6iM/exec';
+        // Funzione per convertire la foto in dati per Drive
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        async function salvaDati() {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbyvr9GXfq4sE-Nv_fDxxB9GmGygVC3SY5hygU7pC8J-JPUtlcAMqvWelFE1SW9mXUYZ/exec';
             
             const btn = document.querySelector('.btn-save');
-            const originalText = btn.innerText;
             btn.innerText = "Invio in corso...";
             btn.disabled = true;
+
+            let fileData = null;
+            const fileInput = document.getElementById('file_foto');
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const base64 = await toBase64(file);
+                fileData = {
+                    base64: base64.split(',')[1],
+                    type: file.type
+                };
+            }
 
             const payload = {
                 scavo: path.scavo,
@@ -313,38 +329,31 @@
                 numero_us: document.getElementById('num_us').value,
                 tipo_us: document.getElementById('tipo_us').value,
                 operatore: document.getElementById('operatore').value,
-                foto: document.getElementById('check_foto').checked,
+                fotoSpunta: document.getElementById('check_foto').checked,
+                fotoFile: fileData,
                 rapporti: rapportiDati,
-                descrizione: document.getElementById('descrizione').value
+                descrizione: document.getElementById('descrizione').value,
+                interpretazione: document.getElementById('interpretazione').value
             };
 
             fetch(scriptURL, {
                 method: 'POST',
                 mode: 'no-cors',
-                cache: 'no-cache',
                 body: JSON.stringify(payload)
             })
             .then(() => {
-                alert("Perfetto! US salvata correttamente nel database.");
-                btn.innerText = originalText;
-                btn.disabled = false;
-                // Pulizia del form dopo l'invio
-                document.getElementById('num_us').value = "";
-                document.getElementById('descrizione').value = "";
-                rapportiDati = [];
-                renderChips();
-                closeModal();
+                alert("Dati e Foto salvati correttamente!");
+                location.reload(); 
             })
             .catch(error => {
-                console.error('Errore:', error);
-                alert("Ops! Qualcosa è andato storto nell'invio.");
-                btn.innerText = originalText;
+                alert("Errore nell'invio.");
                 btn.disabled = false;
+                btn.innerText = "INVIA DATI";
             });
         }
 
-        // Questo comando fa partire l'app!
         render();
     </script>
 </body>
+</html>
 </html>
