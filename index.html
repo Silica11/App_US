@@ -186,20 +186,25 @@
             </div>
 
             <label>Rapporti Stratigrafici</label>
-            <div class="rapporti-grid">
-                <button type="button" class="btn-rapporto" onclick="addRapporto('Copre')">Copre</button>
-                <button type="button" class="btn-rapporto" onclick="addRapporto('È coperto da')">È coperto da</button>
-                <button type="button" class="btn-rapporto" onclick="addRapporto('Riempie')">Riempie</button>
-                <button type="button" class="btn-rapporto" onclick="addRapporto('È riempito da')">È riempito da</button>
-                <button type="button" class="btn-rapporto" onclick="addRapporto('Taglia')">Taglia</button>
-                <button type="button" class="btn-rapporto" onclick="addRapporto('È tagliato da')">È tagliato da</button>
-            </div>
-            <div id="chips-area" class="chip-container"></div>
+<div class="rapporti-grid">
+    <button type="button" class="btn-rapporto" onclick="addRapporto('Copre')">Copre</button>
+    <button type="button" class="btn-rapporto" onclick="addRapporto('È coperto da')">È coperto da</button>
+    <button type="button" class="btn-rapporto" onclick="addRapporto('Riempie')">Riempie</button>
+    <button type="button" class="btn-rapporto" onclick="addRapporto('È riempito da')">È riempito da</button>
+    <button type="button" class="btn-rapporto" onclick="addRapporto('Taglia')">Taglia</button>
+    <button type="button" class="btn-rapporto" onclick="addRapporto('È tagliato da')">È tagliato da</button>
+</div>
+<div id="chips-area" class="chip-container"></div>
 
-            <div class="form-group" style="margin-top:15px;">
-                <label>Descrizione / Interpretazione</label>
-                <textarea id="descrizione" rows="4"></textarea>
-            </div>
+<div class="form-group" style="margin-top:15px;">
+    <label>Descrizione (Dati oggettivi)</label>
+    <textarea id="descrizione" rows="3" placeholder="Es: Terreno sabbioso bruno..."></textarea>
+</div>
+
+<div class="form-group">
+    <label>Interpretazione (Dati soggettivi)</label>
+    <textarea id="interpretazione" rows="3" placeholder="Es: Riempimento di buca..."></textarea>
+</div>
 
             <button class="btn-save" onclick="salvaDati()">INVIA DATI</button>
             <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; margin-top:10px; cursor:pointer;">Annulla</button>
