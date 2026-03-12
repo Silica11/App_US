@@ -24,7 +24,6 @@
             align-items: center;
         }
 
-        /* Navigazione e Header */
         .header-container {
             width: 100%;
             max-width: 500px;
@@ -51,7 +50,6 @@
             font-weight: bold;
         }
 
-        /* Griglia dei Box */
         .grid-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -79,7 +77,6 @@
         .box:active { transform: scale(0.95); }
         .box-icon { font-size: 24px; margin-bottom: 10px; }
 
-        /* Bottone Floating + */
         .fab {
             position: fixed;
             bottom: 30px;
@@ -98,7 +95,6 @@
             z-index: 999;
         }
 
-        /* Stile Modal (Form) */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -148,7 +144,7 @@
 
     <div id="form-modal" class="modal-overlay">
         <div class="modal-content">
-            <h2 style="text-align:center; color: var(--accent-pink);">Nuova US</h2>
+            <h2 style="text-align:center; color: var(--accent-pink);">Scheda US</h2>
             
             <div class="form-group">
                 <label>Contesto (Sola Lettura)</label>
@@ -186,25 +182,25 @@
             </div>
 
             <label>Rapporti Stratigrafici</label>
-<div class="rapporti-grid">
-    <button type="button" class="btn-rapporto" onclick="addRapporto('Copre')">Copre</button>
-    <button type="button" class="btn-rapporto" onclick="addRapporto('È coperto da')">È coperto da</button>
-    <button type="button" class="btn-rapporto" onclick="addRapporto('Riempie')">Riempie</button>
-    <button type="button" class="btn-rapporto" onclick="addRapporto('È riempito da')">È riempito da</button>
-    <button type="button" class="btn-rapporto" onclick="addRapporto('Taglia')">Taglia</button>
-    <button type="button" class="btn-rapporto" onclick="addRapporto('È tagliato da')">È tagliato da</button>
-</div>
-<div id="chips-area" class="chip-container"></div>
+            <div class="rapporti-grid">
+                <button type="button" class="btn-rapporto" onclick="addRapporto('Copre')">Copre</button>
+                <button type="button" class="btn-rapporto" onclick="addRapporto('È coperto da')">È coperto da</button>
+                <button type="button" class="btn-rapporto" onclick="addRapporto('Riempie')">Riempie</button>
+                <button type="button" class="btn-rapporto" onclick="addRapporto('È riempito da')">È riempito da</button>
+                <button type="button" class="btn-rapporto" onclick="addRapporto('Taglia')">Taglia</button>
+                <button type="button" class="btn-rapporto" onclick="addRapporto('È tagliato da')">È tagliato da</button>
+            </div>
+            <div id="chips-area" class="chip-container"></div>
 
-<div class="form-group" style="margin-top:15px;">
-    <label>Descrizione (Dati oggettivi)</label>
-    <textarea id="descrizione" rows="3" placeholder="Es: Terreno sabbioso bruno..."></textarea>
-</div>
+            <div class="form-group" style="margin-top:15px;">
+                <label>Descrizione (Dati oggettivi)</label>
+                <textarea id="descrizione" rows="3" placeholder="Es: Terreno sabbioso bruno..."></textarea>
+            </div>
 
-<div class="form-group">
-    <label>Interpretazione (Dati soggettivi)</label>
-    <textarea id="interpretazione" rows="3" placeholder="Es: Riempimento di buca..."></textarea>
-</div>
+            <div class="form-group">
+                <label>Interpretazione (Dati soggettivi)</label>
+                <textarea id="interpretazione" rows="3" placeholder="Es: Riempimento di buca..."></textarea>
+            </div>
 
             <button class="btn-save" onclick="salvaDati()">INVIA DATI</button>
             <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; margin-top:10px; cursor:pointer;">Annulla</button>
@@ -212,7 +208,7 @@
     </div>
 
     <script>
-       const dataStruttura = {
+        const dataStruttura = {
             "Asingeran 2022": {
                 "Cantiere E": ["Q1", "Q2"],
                 "Cantiere F": ["Q1"]
@@ -225,7 +221,7 @@
         let currentLevel = "HOME";
         let path = { scavo: "", cantiere: "", quadrante: "" };
         let rapportiDati = [];
-        let databaseLocale = []; // Qui salviamo i dati scaricati
+        let databaseLocale = [];
 
         const grid = document.getElementById('main-grid');
         const breadcrumb = document.getElementById('breadcrumb');
@@ -233,7 +229,6 @@
         const modal = document.getElementById('form-modal');
         const chipsArea = document.getElementById('chips-area');
 
-        // FUNZIONE PER SCARICARE I DATI DA GOOGLE SHEETS
         async function caricaDatiDalDatabase() {
             const scriptURL = 'https://script.google.com/macros/s/AKfycbwA9af3cl4xar-C2Apgns5qPMD_Py5AfcFIEhfxS0BNuZrO5s6t6J5t1GO11fu5b4iV/exec';
             try {
@@ -241,7 +236,7 @@
                 databaseLocale = await response.json();
                 render(); 
             } catch (e) {
-                console.error("Errore caricamento dati:", e);
+                console.error("Errore caricamento:", e);
             }
         }
 
@@ -264,8 +259,8 @@
                     createBox(q, "🟦", () => {
                         path.quadrante = q;
                         currentLevel = "US_LIST";
-                        render(); // Disegna subito la schermata vuota/caricamento
-                        caricaDatiDalDatabase(); // Intanto scarica i dati
+                        render();
+                        caricaDatiDalDatabase();
                     });
                 });
             }
@@ -280,13 +275,11 @@
                 );
 
                 if (usFiltrate.length === 0) {
-                    grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: gray;'>Nessuna US trovata o caricamento in corso...</p>";
+                    grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: gray;'>Nessuna US o caricamento...</p>";
                 } else {
                     usFiltrate.forEach(us => {
                         const div = document.createElement('div');
                         div.className = 'box';
-                        
-                        // DESIGN BOX US MINI
                         div.style.aspectRatio = "auto";
                         div.style.height = "50px"; 
                         div.style.padding = "5px 15px";
@@ -309,13 +302,24 @@
             }
         }
 
+        function createBox(text, icon, onClick) {
+            const div = document.createElement('div');
+            div.className = 'box';
+            div.innerHTML = `<div class="box-icon">${icon}</div><div>${text}</div>`;
+            div.onclick = onClick;
+            grid.appendChild(div);
+        }
+
+        function selectScavo(s) { path.scavo = s; currentLevel = "CANTIERE"; render(); }
+        function selectCantiere(c) { path.cantiere = c; currentLevel = "QUADRANTE"; render(); }
+        function resetNav() { currentLevel = "HOME"; path = {scavo:"", cantiere:"", quadrante:""}; render(); }
+
         function openForm(dati = null) {
             document.getElementById('form-context').value = `${path.scavo} | ${path.cantiere} | ${path.quadrante}`;
             const btn = document.querySelector('.btn-save');
-            rapportiDati = []; // Reset rapporti ogni volta che si apre
+            rapportiDati = [];
             
             if(dati) {
-                // LOGICA PER RICOSTRUIRE LE CHIPS DALLE 6 COLONNE
                 const mapping = {
                     "Copre": dati.Copre,
                     "È coperto da": dati.Coperto_da,
@@ -347,41 +351,6 @@
                 btn.innerText = "INVIA DATI";
             }
             renderChips(); 
-            modal.style.display = 'flex';
-        }
-
-        function createBox(text, icon, onClick) {
-            const div = document.createElement('div');
-            div.className = 'box';
-            div.innerHTML = `<div class="box-icon">${icon}</div><div>${text}</div>`;
-            div.onclick = onClick;
-            grid.appendChild(div);
-        }
-
-        function selectScavo(s) { path.scavo = s; currentLevel = "CANTIERE"; render(); }
-        function selectCantiere(c) { path.cantiere = c; currentLevel = "QUADRANTE"; render(); }
-        function resetNav() { currentLevel = "HOME"; path = {scavo:"", cantiere:"", quadrante:""}; render(); }
-
-        function openForm(dati = null) {
-            document.getElementById('form-context').value = `${path.scavo} | ${path.cantiere} | ${path.quadrante}`;
-            const btn = document.querySelector('.btn-save');
-            
-            if(dati) {
-                // SE CLICCO SU UN BOX ESISTENTE
-                document.getElementById('num_us').value = dati.Numero_US;
-                document.getElementById('tipo_us').value = dati.Tipo_US;
-                document.getElementById('descrizione').value = dati.Descrizione;
-                document.getElementById('interpretazione').value = dati.Interpretazione;
-                btn.innerText = "AGGIORNA DATI";
-            } else {
-                // SE CLICCO SUL +
-                document.getElementById('num_us').value = "";
-                document.getElementById('descrizione').value = "";
-                document.getElementById('interpretazione').value = "";
-                rapportiDati = [];
-                renderChips();
-                btn.innerText = "INVIA DATI";
-            }
             modal.style.display = 'flex';
         }
 
@@ -455,7 +424,7 @@
                 btn.disabled = false;
                 btn.innerText = "INVIA DATI";
                 closeModal();
-                caricaDatiDalDatabase(); // AGGIORNA I BOX SENZA TORNARE ALLA HOME
+                caricaDatiDalDatabase(); 
             })
             .catch(error => {
                 alert("Errore invio");
