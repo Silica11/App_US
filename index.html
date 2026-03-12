@@ -293,57 +293,57 @@
             });
         }
 
-        function removeRapporto(id) {
+     function removeRapporto(id) {
             rapportiDati = rapportiDati.filter(r => r.id !== id);
             renderChips();
         }
 
         function salvaDati() {
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbx0ih26TqMcqg6YGns5BQDP7TJ9PCDRV5ew8wsDXo2HFW7WwmIH3yrSXNJr3SNdb6iM/exec';
-    
-    // Cambiamo il testo del bottone per dare feedback all'utente
-    const btn = document.querySelector('.btn-save');
-    const originalText = btn.innerText;
-    btn.innerText = "Invio in corso...";
-    btn.disabled = true;
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbx0ih26TqMcqg6YGns5BQDP7TJ9PCDRV5ew8wsDXo2HFW7WwmIH3yrSXNJr3SNdb6iM/exec';
+            
+            const btn = document.querySelector('.btn-save');
+            const originalText = btn.innerText;
+            btn.innerText = "Invio in corso...";
+            btn.disabled = true;
 
-    const payload = {
-        scavo: path.scavo,
-        cantiere: path.cantiere,
-        quadrante: path.quadrante,
-        numero_us: document.getElementById('num_us').value,
-        tipo_us: document.getElementById('tipo_us').value,
-        operatore: document.getElementById('operatore').value,
-        foto: document.getElementById('check_foto').checked,
-        rapporti: rapportiDati,
-        descrizione: document.getElementById('descrizione').value
-    };
+            const payload = {
+                scavo: path.scavo,
+                cantiere: path.cantiere,
+                quadrante: path.quadrante,
+                numero_us: document.getElementById('num_us').value,
+                tipo_us: document.getElementById('tipo_us').value,
+                operatore: document.getElementById('operatore').value,
+                foto: document.getElementById('check_foto').checked,
+                rapporti: rapportiDati,
+                descrizione: document.getElementById('descrizione').value
+            };
 
-    // Usiamo fetch per mandare i dati allo script di Google
-    fetch(scriptURL, {
-        method: 'POST',
-        mode: 'no-cors', // Necessario per Apps Script
-        cache: 'no-cache',
-        body: JSON.stringify(payload)
-    })
-    .then(() => {
-        alert("Perfetto! US salvata correttamente nel database.");
-        btn.innerText = originalText;
-        btn.disabled = false;
-        closeModal();
-    })
-    .catch(error => {
-        console.error('Errore:', error);
-        alert("Ops! Qualcosa è andato storto nell'invio.");
-        btn.innerText = originalText;
-        btn.disabled = false;
-    });
-}
-            console.log("Payload:", payload);
-            alert("Dati pronti! Prossimo step: invio a Google Sheets.");
-            closeModal();
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                alert("Perfetto! US salvata correttamente nel database.");
+                btn.innerText = originalText;
+                btn.disabled = false;
+                // Pulizia del form dopo l'invio
+                document.getElementById('num_us').value = "";
+                document.getElementById('descrizione').value = "";
+                rapportiDati = [];
+                renderChips();
+                closeModal();
+            })
+            .catch(error => {
+                console.error('Errore:', error);
+                alert("Ops! Qualcosa è andato storto nell'invio.");
+                btn.innerText = originalText;
+                btn.disabled = false;
+            });
         }
 
+        // Questo comando fa partire l'app!
         render();
     </script>
 </body>
