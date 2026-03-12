@@ -277,7 +277,14 @@
             } 
             else if (currentLevel === "QUADRANTE") {
                 breadcrumb.innerText = `Home > ${path.scavo} > ${path.cantiere}`;
-                dataStruttura[path.scavo][path.cantiere].forEach(q => createBox(q, "🟦", () => selectQuadrante(q), () => deleteItem(q)));
+                dataStruttura[path.scavo][path.cantiere].forEach(q => {
+                    createBox(q, "🟦", () => {
+                        path.quadrante = q; 
+                        currentLevel = "US_LIST"; 
+                        render(); 
+                        caricaDatiDalDatabase(); 
+                    }, () => deleteItem(q));
+                });
             }
             else if (currentLevel === "US_LIST") {
                 breadcrumb.innerText = `${path.scavo} > ${path.cantiere} > ${path.quadrante}`;
