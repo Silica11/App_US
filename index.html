@@ -293,18 +293,29 @@
             grid.innerHTML = "";
             addButton.style.display = "flex"; 
 
+            // --- NUOVA GESTIONE BRICIOLE DI PANE CLICCABILI ---
+            let bcHTML = `<span onclick="event.stopPropagation(); resetNav()" style="cursor:pointer; text-decoration:underline;">Home</span>`;
+            if (currentLevel === "CANTIERE" || currentLevel === "QUADRANTE" || currentLevel === "US_LIST") {
+                bcHTML += ` > <span onclick="event.stopPropagation(); selectScavo('${path.scavo}')" style="cursor:pointer; text-decoration:underline;">${path.scavo}</span>`;
+            }
+            if (currentLevel === "QUADRANTE" || currentLevel === "US_LIST") {
+                bcHTML += ` > <span onclick="event.stopPropagation(); selectCantiere('${path.cantiere}')" style="cursor:pointer; text-decoration:underline;">${path.cantiere}</span>`;
+            }
+            if (currentLevel === "US_LIST") {
+                bcHTML += ` > <span style="font-weight:bold;">${path.quadrante}</span>`;
+            }
+            breadcrumb.innerHTML = bcHTML;
+            // --------------------------------------------------
+
             if (currentLevel === "HOME") {
-                breadcrumb.innerText = "Home (Scavi)";
                 if (Object.keys(dataStruttura).length === 0) grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: gray;'>Nessuno scavo. Clicca + per creare.</p>";
                 Object.keys(dataStruttura).forEach(s => createBox(s, "🏗️", () => selectScavo(s), () => deleteItem(s)));
             } 
             else if (currentLevel === "CANTIERE") {
-                breadcrumb.innerText = `Home > ${path.scavo}`;
                 if (Object.keys(dataStruttura[path.scavo] || {}).length === 0) grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: gray;'>Nessun cantiere. Clicca + per creare.</p>";
                 Object.keys(dataStruttura[path.scavo]).forEach(c => createBox(c, "🚧", () => selectCantiere(c), () => deleteItem(c)));
             } 
             else if (currentLevel === "QUADRANTE") {
-                breadcrumb.innerText = `Home > ${path.scavo} > ${path.cantiere}`;
                 if ((dataStruttura[path.scavo][path.cantiere] || []).length === 0) grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: gray;'>Nessun quadrante. Clicca + per creare.</p>";
                 dataStruttura[path.scavo][path.cantiere].forEach(q => createBox(q, "🟦", () => {
                     path.quadrante = q; 
@@ -314,8 +325,6 @@
                 }, () => deleteItem(q)));
             }
             else if (currentLevel === "US_LIST") {
-                breadcrumb.innerText = `${path.scavo} > ${path.cantiere} > ${path.quadrante}`;
-
                 const usFiltrate = databaseLocale.filter(us => 
                     String(us.Scavo || "").trim().toLowerCase() === String(path.scavo).trim().toLowerCase() && 
                     String(us.Cantiere || "").trim().toLowerCase() === String(path.cantiere).trim().toLowerCase() && 
@@ -337,7 +346,6 @@
                         div.style.border = "1px dashed var(--accent-pink)";
                         div.style.background = "#fff";
                         
-                        // Tasto X per le US
                         const xBtn = document.createElement('div');
                         xBtn.className = 'delete-btn';
                         xBtn.innerText = '✕';
