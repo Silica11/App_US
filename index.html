@@ -5,105 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>US Digitali - ArcheoApp</title>
     <style>
-        /* Stile del Modal (Form) */
-.modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.4);
-    display: none;
-    justify-content: center;
-    align-items: flex-end; /* Effetto foglio che sale dal basso */
-    z-index: 1000;
-}
-
-.modal-content {
-    background: var(--white);
-    width: 100%;
-    max-width: 500px;
-    max-height: 90%;
-    border-radius: 30px 30px 0 0;
-    padding: 25px;
-    overflow-y: auto;
-    box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
-}
-
-.form-group { margin-bottom: 15px; }
-
-label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: var(--accent-pink);
-}
-
-input, select, textarea {
-    width: 100%;
-    padding: 12px;
-    border-radius: 12px;
-    border: 1px solid var(--primary-pink);
-    font-size: 16px;
-    box-sizing: border-box;
-    outline: none;
-}
-
-input[readonly] {
-    background-color: #f2f2f2; /* Campi bloccati più scuri */
-    color: #888;
-}
-
-/* Griglia Rapporti Stratigrafici */
-.rapporti-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.btn-rapporto {
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid var(--accent-pink);
-    background: white;
-    color: var(--accent-pink);
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.chip-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 5px;
-}
-
-.chip {
-    background: var(--primary-pink);
-    padding: 5px 10px;
-    border-radius: 15px;
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-}
-
-.chip .close-chip {
-    margin-left: 8px;
-    color: red;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.btn-save {
-    width: 100%;
-    padding: 15px;
-    background: var(--accent-pink);
-    color: white;
-    border: none;
-    border-radius: 15px;
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 20px;
-}
         :root {
             --primary-pink: #fce4ec;
             --accent-pink: #f06292;
@@ -123,7 +24,7 @@ input[readonly] {
             align-items: center;
         }
 
-        /* Barra di ricerca e Navigazione */
+        /* Navigazione e Header */
         .header-container {
             width: 100%;
             max-width: 500px;
@@ -147,6 +48,7 @@ input[readonly] {
             font-size: 14px;
             color: var(--accent-pink);
             cursor: pointer;
+            font-weight: bold;
         }
 
         /* Griglia dei Box */
@@ -165,7 +67,7 @@ input[readonly] {
             text-align: center;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s;
             border: 2px solid var(--primary-pink);
             display: flex;
             flex-direction: column;
@@ -174,14 +76,8 @@ input[readonly] {
             aspect-ratio: 1 / 1;
         }
 
-        .box:active {
-            transform: scale(0.95);
-        }
-
-        .box-icon {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
+        .box:active { transform: scale(0.95); }
+        .box-icon { font-size: 24px; margin-bottom: 10px; }
 
         /* Bottone Floating + */
         .fab {
@@ -193,16 +89,50 @@ input[readonly] {
             background-color: var(--accent-pink);
             color: white;
             border-radius: 50%;
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: center;
             font-size: 30px;
             box-shadow: 0 4px 15px rgba(240, 98, 146, 0.4);
             cursor: pointer;
-            display: none; /* Nascosto finché non siamo nel quadrante */
+            z-index: 999;
         }
 
-        .hidden { display: none; }
+        /* Stile Modal (Form) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            display: none;
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--white);
+            width: 100%;
+            max-width: 500px;
+            max-height: 90%;
+            border-radius: 30px 30px 0 0;
+            padding: 25px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 5px; color: var(--accent-pink); }
+        input, select, textarea { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--primary-pink); font-size: 16px; box-sizing: border-box; }
+        input[readonly] { background-color: #f2f2f2; color: #888; }
+
+        .rapporti-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .btn-rapporto { padding: 10px; border-radius: 10px; border: 1px solid var(--accent-pink); background: white; color: var(--accent-pink); cursor: pointer; font-size: 12px; }
+        
+        .chip-container { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+        .chip { background: var(--primary-pink); padding: 5px 10px; border-radius: 15px; font-size: 13px; display: flex; align-items: center; }
+        .close-chip { margin-left: 8px; color: red; font-weight: bold; cursor: pointer; }
+
+        .btn-save { width: 100%; padding: 15px; background: var(--accent-pink); color: white; border: none; border-radius: 15px; font-size: 18px; font-weight: bold; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -212,13 +142,71 @@ input[readonly] {
         <div id="breadcrumb" class="breadcrumb" onclick="resetNav()">Home</div>
     </div>
 
-    <div id="main-grid" class="grid-container">
-        </div>
+    <div id="main-grid" class="grid-container"></div>
 
     <div id="add-button" class="fab" onclick="openForm()">+</div>
 
+    <div id="form-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="text-align:center; color: var(--accent-pink);">Nuova US</h2>
+            
+            <div class="form-group">
+                <label>Contesto (Sola Lettura)</label>
+                <input type="text" id="form-context" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>Numero US</label>
+                <input type="number" id="num_us" placeholder="Es: 100">
+            </div>
+
+            <div class="form-group">
+                <label>Tipo US</label>
+                <select id="tipo_us">
+                    <option value="piano">Piano</option>
+                    <option value="taglio">Taglio</option>
+                    <option value="riempimento">Riempimento</option>
+                    <option value="accumulo">Accumulo</option>
+                    <option value="installazione">Installazione</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Operatore</label>
+                <select id="operatore">
+                    <option value="Archeologo 1">Archeologo 1</option>
+                    <option value="Archeologo 2">Archeologo 2</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Foto Effettuata?</label>
+                <input type="checkbox" id="check_foto" style="width: auto;">
+                <input type="file" id="file_foto" accept="image/*" capture="camera" style="margin-top: 10px;">
+            </div>
+
+            <label>Rapporti Stratigrafici</label>
+            <div class="rapporti-grid">
+                <button type="button" class="btn-rapporto" onclick="addRapporto('Copre')">Copre</button>
+                <button type="button" class="btn-rapporto" onclick="addRapporto('È coperto da')">È coperto da</button>
+                <button type="button" class="btn-rapporto" onclick="addRapporto('Riempie')">Riempie</button>
+                <button type="button" class="btn-rapporto" onclick="addRapporto('È riempito da')">È riempito da</button>
+                <button type="button" class="btn-rapporto" onclick="addRapporto('Taglia')">Taglia</button>
+                <button type="button" class="btn-rapporto" onclick="addRapporto('È tagliato da')">È tagliato da</button>
+            </div>
+            <div id="chips-area" class="chip-container"></div>
+
+            <div class="form-group" style="margin-top:15px;">
+                <label>Descrizione / Interpretazione</label>
+                <textarea id="descrizione" rows="4"></textarea>
+            </div>
+
+            <button class="btn-save" onclick="salvaDati()">INVIA DATI</button>
+            <button onclick="closeModal()" style="width:100%; background:none; border:none; color:gray; margin-top:10px; cursor:pointer;">Annulla</button>
+        </div>
+    </div>
+
     <script>
-        // Simulazione dati (Poi verranno da Google Sheets)
         const dataStruttura = {
             "Asingeran 2022": {
                 "Cantiere E": ["Q1", "Q2"],
@@ -231,34 +219,30 @@ input[readonly] {
 
         let currentLevel = "HOME";
         let path = { scavo: "", cantiere: "", quadrante: "" };
+        let rapportiDati = [];
 
         const grid = document.getElementById('main-grid');
         const breadcrumb = document.getElementById('breadcrumb');
         const addButton = document.getElementById('add-button');
+        const modal = document.getElementById('form-modal');
+        const chipsArea = document.getElementById('chips-area');
 
         function render() {
             grid.innerHTML = "";
-            
             if (currentLevel === "HOME") {
                 breadcrumb.innerText = "Home";
                 addButton.style.display = "none";
-                Object.keys(dataStruttura).forEach(scavo => {
-                    createBox(scavo, "🏗️", () => selectScavo(scavo));
-                });
+                Object.keys(dataStruttura).forEach(s => createBox(s, "🏗️", () => selectScavo(s)));
             } 
             else if (currentLevel === "CANTIERE") {
                 breadcrumb.innerText = `Home > ${path.scavo}`;
                 addButton.style.display = "none";
-                Object.keys(dataStruttura[path.scavo]).forEach(cantiere => {
-                    createBox(cantiere, "🚧", () => selectCantiere(cantiere));
-                });
+                Object.keys(dataStruttura[path.scavo]).forEach(c => createBox(c, "🚧", () => selectCantiere(c)));
             } 
             else if (currentLevel === "QUADRANTE") {
                 breadcrumb.innerText = `Home > ${path.scavo} > ${path.cantiere}`;
                 addButton.style.display = "none";
-                dataStruttura[path.scavo][path.cantiere].forEach(quad => {
-                    createBox(quad, "🟦", () => selectQuadrante(quad));
-                });
+                dataStruttura[path.scavo][path.cantiere].forEach(q => createBox(q, "🟦", () => selectQuadrante(q)));
             }
             else if (currentLevel === "US_LIST") {
                 breadcrumb.innerText = `${path.scavo} > ${path.cantiere} > ${path.quadrante}`;
@@ -280,120 +264,58 @@ input[readonly] {
         function selectQuadrante(q) { path.quadrante = q; currentLevel = "US_LIST"; render(); }
         function resetNav() { currentLevel = "HOME"; path = {scavo:"", cantiere:"", quadrante:""}; render(); }
 
-        const modal = document.getElementById('form-modal');
-const chipsArea = document.getElementById('chips-area');
-let rapportiDati = [];
-
-function openForm() {
-    // Imposta i campi bloccati basandosi sulla navigazione attuale
-    document.getElementById('form-context').value = `${path.scavo} | ${path.cantiere} | ${path.quadrante}`;
-    modal.style.display = 'flex';
-}
-
-function addRapporto(tipo) {
-    const num = prompt(`Inserisci il numero US che ${tipo.toLowerCase()}:`);
-    if (num) {
-        const id = Date.now();
-        rapportiDati.push({ id, tipo, num });
-        renderChips();
-    }
-}
-
-function renderChips() {
-    chipsArea.innerHTML = "";
-    rapportiDati.forEach(r => {
-        const chip = document.createElement('div');
-        chip.className = 'chip';
-        chip.innerHTML = `${r.tipo}: ${r.num} <span class="close-chip" onclick="removeRapporto(${r.id})">✕</span>`;
-        chipsArea.appendChild(chip);
-    });
-}
-
-function removeRapporto(id) {
-    rapportiDati = rapportiDati.filter(r => r.id !== id);
-    renderChips();
-}
-
-function salvaDati() {
-    // Qui andremo a mettere il collegamento a Google Sheets
-    const payload = {
-        scavo: path.scavo,
-        cantiere: path.cantiere,
-        quadrante: path.quadrante,
-        numero_us: document.getElementById('num_us').value,
-        tipo_us: document.getElementById('tipo_us').value,
-        operatore: document.getElementById('operatore').value,
-        foto: document.getElementById('check_foto').checked,
-        rapporti: rapportiDati,
-        descrizione: document.getElementById('descrizione').value
-    };
-
-    console.log("Dati pronti per Sheets:", payload);
-    alert("Dati pronti per l'invio!");
-    modal.style.display = 'none';
-}
+        function openForm() {
+            document.getElementById('form-context').value = `${path.scavo} | ${path.cantiere} | ${path.quadrante}`;
+            modal.style.display = 'flex';
         }
 
-        // Inizializzazione
+        function closeModal() {
+            modal.style.display = 'none';
+            rapportiDati = [];
+            renderChips();
+        }
+
+        function addRapporto(tipo) {
+            const num = prompt(`Inserisci il numero US che ${tipo.toLowerCase()}:`);
+            if (num) {
+                rapportiDati.push({ id: Date.now(), tipo, num });
+                renderChips();
+            }
+        }
+
+        function renderChips() {
+            chipsArea.innerHTML = "";
+            rapportiDati.forEach(r => {
+                const chip = document.createElement('div');
+                chip.className = 'chip';
+                chip.innerHTML = `${r.tipo}: ${r.num} <span class="close-chip" onclick="removeRapporto(${r.id})">✕</span>`;
+                chipsArea.appendChild(chip);
+            });
+        }
+
+        function removeRapporto(id) {
+            rapportiDati = rapportiDati.filter(r => r.id !== id);
+            renderChips();
+        }
+
+        function salvaDati() {
+            const payload = {
+                scavo: path.scavo,
+                cantiere: path.cantiere,
+                quadrante: path.quadrante,
+                numero_us: document.getElementById('num_us').value,
+                tipo_us: document.getElementById('tipo_us').value,
+                operatore: document.getElementById('operatore').value,
+                foto: document.getElementById('check_foto').checked,
+                rapporti: rapportiDati,
+                descrizione: document.getElementById('descrizione').value
+            };
+            console.log("Payload:", payload);
+            alert("Dati pronti! Prossimo step: invio a Google Sheets.");
+            closeModal();
+        }
+
         render();
     </script>
-    <div id="form-modal" class="modal-overlay">
-    <div class="modal-content">
-        <h2 style="text-align:center; color: var(--accent-pink);">Nuova US</h2>
-        
-        <div class="form-group">
-            <label>Contesto (Sola Lettura)</label>
-            <input type="text" id="form-context" readonly>
-        </div>
-
-        <div class="form-group">
-            <label>Numero US</label>
-            <input type="number" id="num_us" placeholder="Es: 100">
-        </div>
-
-        <div class="form-group">
-            <label>Tipo US</label>
-            <select id="tipo_us">
-                <option value="piano">Piano</option>
-                <option value="taglio">Taglio</option>
-                <option value="riempimento">Riempimento</option>
-                <option value="accumulo">Accumulo</option>
-                <option value="installazione">Installazione</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Operatore</label>
-            <select id="operatore">
-                <option value="Archeologo 1">Archeologo 1</option>
-                <option value="Archeologo 2">Archeologo 2</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Foto Effettuata?</label>
-            <input type="checkbox" id="check_foto" style="width: auto;">
-            <input type="file" id="file_foto" accept="image/*" capture="camera" style="margin-top: 10px;">
-        </div>
-
-        <div class="rapporti-grid">
-            <button class="btn-rapporto" onclick="addRapporto('Copre')">Copre</button>
-            <button class="btn-rapporto" onclick="addRapporto('È coperto da')">È coperto da</button>
-            <button class="btn-rapporto" onclick="addRapporto('Riempie')">Riempie</button>
-            <button class="btn-rapporto" onclick="addRapporto('È riempito da')">È riempito da</button>
-            <button class="btn-rapporto" onclick="addRapporto('Taglia')">Taglia</button>
-            <button class="btn-rapporto" onclick="addRapporto('È tagliato da')">È tagliato da</button>
-        </div>
-        <div id="chips-area" class="chip-container"></div>
-
-        <div class="form-group">
-            <label>Descrizione / Interpretazione</label>
-            <textarea id="descrizione" rows="4"></textarea>
-        </div>
-
-        <button class="btn-save" onclick="salvaDati()">INVIA DATI</button>
-        <button onclick="document.getElementById('form-modal').style.display='none'" style="width:100%; background:none; border:none; color:gray; margin-top:10px;">Annulla</button>
-    </div>
-</div>
 </body>
 </html>
