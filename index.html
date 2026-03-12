@@ -275,14 +275,14 @@
                 breadcrumb.innerText = `Home > ${path.scavo}`;
                 Object.keys(dataStruttura[path.scavo]).forEach(c => createBox(c, "🚧", () => selectCantiere(c), () => deleteItem(c)));
             } 
-            else if (currentLevel === "QUADRANTE") {
+           else if (currentLevel === "QUADRANTE") {
                 breadcrumb.innerText = `Home > ${path.scavo} > ${path.cantiere}`;
                 dataStruttura[path.scavo][path.cantiere].forEach(q => {
                     createBox(q, "🟦", () => {
                         path.quadrante = q; 
                         currentLevel = "US_LIST"; 
-                        render(); 
-                        caricaDatiDalDatabase(); 
+                        render(); // Disegna la schermata
+                        caricaDatiDalDatabase(); // <--- Questa DEVE esserci per vedere le US!
                     }, () => deleteItem(q));
                 });
             }
@@ -344,8 +344,15 @@
         }
 
         // Gestione click sul tasto + a seconda del livello
-        function handleFabClick() {
-            const nuovo = prompt("Inserisci nome:");
+       function handleFabClick() {
+            // Se siamo nell'elenco delle US, deve aprire il form US e NON chiedere il nome
+            if (currentLevel === "US_LIST") {
+                openForm(); // Apre la scheda US (Numero, Tipo, Descrizione...)
+                return;
+            }
+
+            // Se siamo in Home, Cantiere o Quadrante, chiede il nome per aggiungerne uno nuovo
+            const nuovo = prompt("Inserisci nome del nuovo elemento:");
             if (!nuovo) return;
 
             if (currentLevel === "HOME") {
@@ -354,9 +361,6 @@
                 dataStruttura[path.scavo][nuovo] = [];
             } else if (currentLevel === "QUADRANTE") {
                 dataStruttura[path.scavo][path.cantiere].push(nuovo);
-            } else if (currentLevel === "US_LIST") {
-                openForm();
-                return;
             }
             render();
         }
