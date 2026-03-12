@@ -72,6 +72,28 @@
             align-items: center;
             justify-content: center;
             aspect-ratio: 1 / 1;
+            position: relative; /* Per posizionare la X */
+        }
+
+        /* La X tonda per eliminare */
+        .delete-btn {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: #ff5252;
+            color: white;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 10;
+            border: 2px solid white;
         }
 
         .box:active { transform: scale(0.95); }
@@ -86,7 +108,7 @@
             background-color: var(--accent-pink);
             color: white;
             border-radius: 50%;
-            display: none;
+            display: flex; /* Sempre flessibile, la controlliamo con il render */
             align-items: center;
             justify-content: center;
             font-size: 30px;
@@ -140,7 +162,7 @@
 
     <div id="main-grid" class="grid-container"></div>
 
-    <div id="add-button" class="fab" onclick="openForm()">+</div>
+    <div id="add-button" class="fab" onclick="handleFabClick()">+</div>
 
     <div id="form-modal" class="modal-overlay">
         <div class="modal-content">
@@ -208,7 +230,8 @@
     </div>
 
     <script>
-        const dataStruttura = {
+        // dataStruttura ora è gestita come let per permettere aggiunte
+        let dataStruttura = {
             "Asingeran 2022": {
                 "Cantiere E": ["Q1", "Q2"],
                 "Cantiere F": ["Q1"]
@@ -242,31 +265,22 @@
 
         function render() {
             grid.innerHTML = "";
+            addButton.style.display = "flex"; // + Sempre visibile
+
             if (currentLevel === "HOME") {
                 breadcrumb.innerText = "Home";
-                addButton.style.display = "none";
-                Object.keys(dataStruttura).forEach(s => createBox(s, "🏗️", () => selectScavo(s)));
+                Object.keys(dataStruttura).forEach(s => createBox(s, "🏗️", () => selectScavo(s), () => deleteItem(s)));
             } 
             else if (currentLevel === "CANTIERE") {
                 breadcrumb.innerText = `Home > ${path.scavo}`;
-                addButton.style.display = "none";
-                Object.keys(dataStruttura[path.scavo]).forEach(c => createBox(c, "🚧", () => selectCantiere(c)));
+                Object.keys(dataStruttura[path.scavo]).forEach(c => createBox(c, "🚧", () => selectCantiere(c), () => deleteItem(c)));
             } 
             else if (currentLevel === "QUADRANTE") {
                 breadcrumb.innerText = `Home > ${path.scavo} > ${path.cantiere}`;
-                addButton.style.display = "none";
-                dataStruttura[path.scavo][path.cantiere].forEach(q => {
-                    createBox(q, "🟦", () => {
-                        path.quadrante = q;
-                        currentLevel = "US_LIST";
-                        render();
-                        caricaDatiDalDatabase();
-                    });
-                });
+                dataStruttura[path.scavo][path.cantiere].forEach(q => createBox(q, "🟦", () => selectQuadrante(q), () => deleteItem(q)));
             }
             else if (currentLevel === "US_LIST") {
                 breadcrumb.innerText = `${path.scavo} > ${path.cantiere} > ${path.quadrante}`;
-                addButton.style.display = "flex";
 
                 const usFiltrate = databaseLocale.filter(us => 
                     String(us.Scavo) === path.scavo && 
@@ -302,16 +316,64 @@
             }
         }
 
-        function createBox(text, icon, onClick) {
+        // createBox con X di eliminazione
+        function createBox(text, icon, onClick, onDelete) {
             const div = document.createElement('div');
             div.className = 'box';
+            
+            // X tonda
+            const xBtn = document.createElement('div');
+            xBtn.className = 'delete-btn';
+            xBtn.innerText = '✕';
+            xBtn.onclick = (e) => {
+                e.stopPropagation(); // Evita di cliccare il box sotto
+                if(confirm(`Eliminare ${text}?`)) onDelete();
+            };
+            
             div.innerHTML = `<div class="box-icon">${icon}</div><div>${text}</div>`;
+            div.appendChild(xBtn);
             div.onclick = onClick;
             grid.appendChild(div);
         }
 
+        // Gestione click sul tasto + a seconda del livello
+        function handleFabClick() {
+            const nuovo = prompt("Inserisci nome:");
+            if (!nuovo) return;
+
+            if (currentLevel === "HOME") {
+                dataStruttura[nuovo] = {};
+            } else if (currentLevel === "CANTIERE") {
+                dataStruttura[path.scavo][nuovo] = [];
+            } else if (currentLevel === "QUADRANTE") {
+                dataStruttura[path.scavo][path.cantiere].push(nuovo);
+            } else if (currentLevel === "US_LIST") {
+                openForm();
+                return;
+            }
+            render();
+        }
+
+        // Funzione per eliminare item
+        function deleteItem(item) {
+            if (currentLevel === "HOME") {
+                delete dataStruttura[item];
+            } else if (currentLevel === "CANTIERE") {
+                delete dataStruttura[path.scavo][item];
+            } else if (currentLevel === "QUADRANTE") {
+                dataStruttura[path.scavo][path.cantiere] = dataStruttura[path.scavo][path.cantiere].filter(q => q !== item);
+            }
+            render();
+        }
+
         function selectScavo(s) { path.scavo = s; currentLevel = "CANTIERE"; render(); }
         function selectCantiere(c) { path.cantiere = c; currentLevel = "QUADRANTE"; render(); }
+        function selectQuadrante(q) { 
+            path.quadrante = q; 
+            currentLevel = "US_LIST"; 
+            render(); 
+            caricaDatiDalDatabase(); 
+        }
         function resetNav() { currentLevel = "HOME"; path = {scavo:"", cantiere:"", quadrante:""}; render(); }
 
         function openForm(dati = null) {
@@ -387,7 +449,7 @@
         });
 
         async function salvaDati() {
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbxfSOzFYZlxDYGbHUwWc0D6W8SK82NTzC84gEW6lNXnRv5ICnyJ5kGTuZRcSD1Nex3q/exec';
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbxRrwCfGHgeUxJkVwGJ_FUFZwqBq-aN64NH2vG176OG4vw0qPQbCbKIbPYh-f-Ph0nH/exec';
             const btn = document.querySelector('.btn-save');
             btn.innerText = "Invio...";
             btn.disabled = true;
